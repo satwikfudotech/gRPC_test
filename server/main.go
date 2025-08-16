@@ -2,44 +2,67 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"net"
-	"runtime"
+	"time"
 
 	pb "grpc-system-monitor/proto"
+
+	"github.com/shirou/gopsutil/v3/cpu"
+	"github.com/shirou/gopsutil/v3/disk"
+	"github.com/shirou/gopsutil/v3/mem"
+	gopsnet "github.com/shirou/gopsutil/v3/net"
 	"google.golang.org/grpc"
 )
 
-type performanceServer struct {
-	pb.UnimplementedPerformanceServiceServer
+type server struct {
+	pb.UnimplementedSystemMonitorServer
 }
 
-func (s *performanceServer) GetVitals(ctx context.Context, req *pb.Empty) (*pb.VitalsResponse, error) {
-	var m runtime.MemStats
-	runtime.ReadMemStats(&m)
+func (s *server) GetMetrics(ctx context.Context, req *pb.MetricsRequest) (*pb.MetricsResponse, error) {
+	// CPU
+	cpuPercent, _ := cpu.Percent(0, false)
 
-	// Dummy CPU usage (real CPU usage would need more tracking)
-	cpuUsage := float32(25.0) // Hardcoded example
-	ramUsage := float32(m.Alloc) / (1024 * 1024) // Convert to MB
+	// RAM
+	vmStat, _ := mem.VirtualMemory()
 
-	return &pb.VitalsResponse{
-		CpuUsage: cpuUsage,
-		RamUsage: ramUsage,
+	// Net I/O
+	netIO, _ := gopsnet.IOCounters(false)
+
+	// Disk I/O
+	diskIO, _ := disk.IOCounters()
+
+	// Get one disk (sda / C: for Windows)
+	var readBytes, writeBytes uint64
+	for _, io := range diskIO {
+		readBytes = io.ReadBytes
+		writeBytes = io.WriteBytes
+		break
+	}
+
+	// Response
+	return &pb.MetricsResponse{
+		CpuUsage:  cpuPercent[0],
+		RamUsage:  vmStat.UsedPercent,
+		Timestamp: time.Now().Format(time.RFC3339),
+		NetIn:     netIO[0].BytesRecv,
+		NetOut:    netIO[0].BytesSent,
+		DiskRead:  readBytes,
+		DiskWrite: writeBytes,
 	}, nil
 }
 
 func main() {
-	listener, err := net.Listen("tcp", ":50051")
+	lis, err := net.Listen("tcp", ":50051") // Laptop as server
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)
 	}
 
 	grpcServer := grpc.NewServer()
-	pb.RegisterPerformanceServiceServer(grpcServer, &performanceServer{})
+	pb.RegisterSystemMonitorServer(grpcServer, &server{})
 
-	fmt.Println("🚀 Server is running on port 50051")
-	if err := grpcServer.Serve(listener); err != nil {
+	log.Println("Server running on port 50051...")
+	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("Failed to serve: %v", err)
 	}
 }

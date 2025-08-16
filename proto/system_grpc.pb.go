@@ -19,105 +19,101 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	PerformanceService_GetVitals_FullMethodName = "/performance.PerformanceService/GetVitals"
+	SystemMonitor_GetMetrics_FullMethodName = "/system.SystemMonitor/GetMetrics"
 )
 
-// PerformanceServiceClient is the client API for PerformanceService service.
+// SystemMonitorClient is the client API for SystemMonitor service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-//
-// Service to get system performance data
-type PerformanceServiceClient interface {
-	GetVitals(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*VitalsResponse, error)
+type SystemMonitorClient interface {
+	GetMetrics(ctx context.Context, in *MetricsRequest, opts ...grpc.CallOption) (*MetricsResponse, error)
 }
 
-type performanceServiceClient struct {
+type systemMonitorClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewPerformanceServiceClient(cc grpc.ClientConnInterface) PerformanceServiceClient {
-	return &performanceServiceClient{cc}
+func NewSystemMonitorClient(cc grpc.ClientConnInterface) SystemMonitorClient {
+	return &systemMonitorClient{cc}
 }
 
-func (c *performanceServiceClient) GetVitals(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*VitalsResponse, error) {
+func (c *systemMonitorClient) GetMetrics(ctx context.Context, in *MetricsRequest, opts ...grpc.CallOption) (*MetricsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(VitalsResponse)
-	err := c.cc.Invoke(ctx, PerformanceService_GetVitals_FullMethodName, in, out, cOpts...)
+	out := new(MetricsResponse)
+	err := c.cc.Invoke(ctx, SystemMonitor_GetMetrics_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// PerformanceServiceServer is the server API for PerformanceService service.
-// All implementations must embed UnimplementedPerformanceServiceServer
+// SystemMonitorServer is the server API for SystemMonitor service.
+// All implementations must embed UnimplementedSystemMonitorServer
 // for forward compatibility.
-//
-// Service to get system performance data
-type PerformanceServiceServer interface {
-	GetVitals(context.Context, *Empty) (*VitalsResponse, error)
-	mustEmbedUnimplementedPerformanceServiceServer()
+type SystemMonitorServer interface {
+	GetMetrics(context.Context, *MetricsRequest) (*MetricsResponse, error)
+	mustEmbedUnimplementedSystemMonitorServer()
 }
 
-// UnimplementedPerformanceServiceServer must be embedded to have
+// UnimplementedSystemMonitorServer must be embedded to have
 // forward compatible implementations.
 //
 // NOTE: this should be embedded by value instead of pointer to avoid a nil
 // pointer dereference when methods are called.
-type UnimplementedPerformanceServiceServer struct{}
+type UnimplementedSystemMonitorServer struct{}
 
-func (UnimplementedPerformanceServiceServer) GetVitals(context.Context, *Empty) (*VitalsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetVitals not implemented")
+func (UnimplementedSystemMonitorServer) GetMetrics(context.Context, *MetricsRequest) (*MetricsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetMetrics not implemented")
 }
-func (UnimplementedPerformanceServiceServer) mustEmbedUnimplementedPerformanceServiceServer() {}
-func (UnimplementedPerformanceServiceServer) testEmbeddedByValue()                            {}
+func (UnimplementedSystemMonitorServer) mustEmbedUnimplementedSystemMonitorServer() {}
+func (UnimplementedSystemMonitorServer) testEmbeddedByValue()                       {}
 
-// UnsafePerformanceServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to PerformanceServiceServer will
+// UnsafeSystemMonitorServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to SystemMonitorServer will
 // result in compilation errors.
-type UnsafePerformanceServiceServer interface {
-	mustEmbedUnimplementedPerformanceServiceServer()
+type UnsafeSystemMonitorServer interface {
+	mustEmbedUnimplementedSystemMonitorServer()
 }
 
-func RegisterPerformanceServiceServer(s grpc.ServiceRegistrar, srv PerformanceServiceServer) {
-	// If the following call pancis, it indicates UnimplementedPerformanceServiceServer was
+func RegisterSystemMonitorServer(s grpc.ServiceRegistrar, srv SystemMonitorServer) {
+	// If the following call pancis, it indicates UnimplementedSystemMonitorServer was
 	// embedded by pointer and is nil.  This will cause panics if an
 	// unimplemented method is ever invoked, so we test this at initialization
 	// time to prevent it from happening at runtime later due to I/O.
 	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
 		t.testEmbeddedByValue()
 	}
-	s.RegisterService(&PerformanceService_ServiceDesc, srv)
+	s.RegisterService(&SystemMonitor_ServiceDesc, srv)
 }
 
-func _PerformanceService_GetVitals_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Empty)
+func _SystemMonitor_GetMetrics_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MetricsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(PerformanceServiceServer).GetVitals(ctx, in)
+		return srv.(SystemMonitorServer).GetMetrics(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: PerformanceService_GetVitals_FullMethodName,
+		FullMethod: SystemMonitor_GetMetrics_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PerformanceServiceServer).GetVitals(ctx, req.(*Empty))
+		return srv.(SystemMonitorServer).GetMetrics(ctx, req.(*MetricsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// PerformanceService_ServiceDesc is the grpc.ServiceDesc for PerformanceService service.
+// SystemMonitor_ServiceDesc is the grpc.ServiceDesc for SystemMonitor service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var PerformanceService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "performance.PerformanceService",
-	HandlerType: (*PerformanceServiceServer)(nil),
+var SystemMonitor_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "system.SystemMonitor",
+	HandlerType: (*SystemMonitorServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetVitals",
-			Handler:    _PerformanceService_GetVitals_Handler,
+			MethodName: "GetMetrics",
+			Handler:    _SystemMonitor_GetMetrics_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

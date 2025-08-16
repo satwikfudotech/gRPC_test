@@ -2,29 +2,34 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"time"
 
 	pb "grpc-system-monitor/proto"
+
 	"google.golang.org/grpc"
 )
 
 func main() {
+	// Connect to server
 	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Could not connect: %v", err)
 	}
 	defer conn.Close()
 
-	client := pb.NewPerformanceServiceClient(conn)
+	client := pb.NewSystemMonitorClient(conn)
 
 	for {
-		res, err := client.GetVitals(context.Background(), &pb.Empty{})
+		resp, err := client.GetMetrics(context.Background(), &pb.MetricsRequest{})
 		if err != nil {
-			log.Fatalf("Error calling GetVitals: %v", err)
+			log.Fatalf("Error fetching metrics: %v", err)
 		}
-		fmt.Printf("📊 CPU Usage: %.2f%% | RAM Usage: %.2f MB\n", res.CpuUsage, res.RamUsage)
-		time.Sleep(2 * time.Second)
+
+		log.Printf("📊 Metrics -> CPU: %.2f%% | RAM: %.2f%% | Time: %s | NetIn: %dB | NetOut: %dB | DiskRead: %dB | DiskWrite: %dB",
+			resp.CpuUsage, resp.RamUsage, resp.Timestamp, resp.NetIn, resp.NetOut, resp.DiskRead, resp.DiskWrite)
+		log.SetFlags(0) // removes default date/time prefix
+
+		time.Sleep(5 * time.Second)
 	}
 }

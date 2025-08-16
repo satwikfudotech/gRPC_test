@@ -1,16 +1,21 @@
 syntax = "proto3";
 
-package performance;
-option go_package = "grpc-performance-test/proto;proto";
+package system;
 
-// Service to get system performance data
-service PerformanceService {
-  rpc GetVitals (Empty) returns (VitalsResponse);
+option go_package = "example.com/system/proto;proto";
+
+service SystemMonitor {
+  rpc GetMetrics (MetricsRequest) returns (MetricsResponse);
 }
 
-message Empty {}
+message MetricsRequest {}
 
-message VitalsResponse {
-  float cpu_usage = 1;
-  float ram_usage = 2;
+message MetricsResponse {
+  double cpu_usage = 1;         // CPU usage %
+  double ram_usage = 2;         // RAM usage %
+  string timestamp = 3;         // Capture time
+  uint64 net_in = 4;            // Bytes received
+  uint64 net_out = 5;           // Bytes sent
+  uint64 disk_read = 6;         // Disk read bytes
+  uint64 disk_write = 7;        // Disk write bytes
 }

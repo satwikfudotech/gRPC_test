@@ -21,26 +21,26 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type Empty struct {
+type MetricsRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *Empty) Reset() {
-	*x = Empty{}
+func (x *MetricsRequest) Reset() {
+	*x = MetricsRequest{}
 	mi := &file_proto_system_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Empty) String() string {
+func (x *MetricsRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Empty) ProtoMessage() {}
+func (*MetricsRequest) ProtoMessage() {}
 
-func (x *Empty) ProtoReflect() protoreflect.Message {
+func (x *MetricsRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_system_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -52,33 +52,38 @@ func (x *Empty) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Empty.ProtoReflect.Descriptor instead.
-func (*Empty) Descriptor() ([]byte, []int) {
+// Deprecated: Use MetricsRequest.ProtoReflect.Descriptor instead.
+func (*MetricsRequest) Descriptor() ([]byte, []int) {
 	return file_proto_system_proto_rawDescGZIP(), []int{0}
 }
 
-type VitalsResponse struct {
+type MetricsResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	CpuUsage      float32                `protobuf:"fixed32,1,opt,name=cpu_usage,json=cpuUsage,proto3" json:"cpu_usage,omitempty"`
-	RamUsage      float32                `protobuf:"fixed32,2,opt,name=ram_usage,json=ramUsage,proto3" json:"ram_usage,omitempty"`
+	CpuUsage      float64                `protobuf:"fixed64,1,opt,name=cpu_usage,json=cpuUsage,proto3" json:"cpu_usage,omitempty"`   // CPU usage %
+	RamUsage      float64                `protobuf:"fixed64,2,opt,name=ram_usage,json=ramUsage,proto3" json:"ram_usage,omitempty"`   // RAM usage %
+	Timestamp     string                 `protobuf:"bytes,3,opt,name=timestamp,proto3" json:"timestamp,omitempty"`                   // Capture time
+	NetIn         uint64                 `protobuf:"varint,4,opt,name=net_in,json=netIn,proto3" json:"net_in,omitempty"`             // Bytes received
+	NetOut        uint64                 `protobuf:"varint,5,opt,name=net_out,json=netOut,proto3" json:"net_out,omitempty"`          // Bytes sent
+	DiskRead      uint64                 `protobuf:"varint,6,opt,name=disk_read,json=diskRead,proto3" json:"disk_read,omitempty"`    // Disk read bytes
+	DiskWrite     uint64                 `protobuf:"varint,7,opt,name=disk_write,json=diskWrite,proto3" json:"disk_write,omitempty"` // Disk write bytes
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *VitalsResponse) Reset() {
-	*x = VitalsResponse{}
+func (x *MetricsResponse) Reset() {
+	*x = MetricsResponse{}
 	mi := &file_proto_system_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *VitalsResponse) String() string {
+func (x *MetricsResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*VitalsResponse) ProtoMessage() {}
+func (*MetricsResponse) ProtoMessage() {}
 
-func (x *VitalsResponse) ProtoReflect() protoreflect.Message {
+func (x *MetricsResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_system_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -90,21 +95,56 @@ func (x *VitalsResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use VitalsResponse.ProtoReflect.Descriptor instead.
-func (*VitalsResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use MetricsResponse.ProtoReflect.Descriptor instead.
+func (*MetricsResponse) Descriptor() ([]byte, []int) {
 	return file_proto_system_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *VitalsResponse) GetCpuUsage() float32 {
+func (x *MetricsResponse) GetCpuUsage() float64 {
 	if x != nil {
 		return x.CpuUsage
 	}
 	return 0
 }
 
-func (x *VitalsResponse) GetRamUsage() float32 {
+func (x *MetricsResponse) GetRamUsage() float64 {
 	if x != nil {
 		return x.RamUsage
+	}
+	return 0
+}
+
+func (x *MetricsResponse) GetTimestamp() string {
+	if x != nil {
+		return x.Timestamp
+	}
+	return ""
+}
+
+func (x *MetricsResponse) GetNetIn() uint64 {
+	if x != nil {
+		return x.NetIn
+	}
+	return 0
+}
+
+func (x *MetricsResponse) GetNetOut() uint64 {
+	if x != nil {
+		return x.NetOut
+	}
+	return 0
+}
+
+func (x *MetricsResponse) GetDiskRead() uint64 {
+	if x != nil {
+		return x.DiskRead
+	}
+	return 0
+}
+
+func (x *MetricsResponse) GetDiskWrite() uint64 {
+	if x != nil {
+		return x.DiskWrite
 	}
 	return 0
 }
@@ -113,13 +153,20 @@ var File_proto_system_proto protoreflect.FileDescriptor
 
 const file_proto_system_proto_rawDesc = "" +
 	"\n" +
-	"\x12proto/system.proto\x12\vperformance\"\a\n" +
-	"\x05Empty\"J\n" +
-	"\x0eVitalsResponse\x12\x1b\n" +
-	"\tcpu_usage\x18\x01 \x01(\x02R\bcpuUsage\x12\x1b\n" +
-	"\tram_usage\x18\x02 \x01(\x02R\bramUsage2R\n" +
-	"\x12PerformanceService\x12<\n" +
-	"\tGetVitals\x12\x12.performance.Empty\x1a\x1b.performance.VitalsResponseB#Z!grpc-performance-test/proto;protob\x06proto3"
+	"\x12proto/system.proto\x12\x06system\"\x10\n" +
+	"\x0eMetricsRequest\"\xd5\x01\n" +
+	"\x0fMetricsResponse\x12\x1b\n" +
+	"\tcpu_usage\x18\x01 \x01(\x01R\bcpuUsage\x12\x1b\n" +
+	"\tram_usage\x18\x02 \x01(\x01R\bramUsage\x12\x1c\n" +
+	"\ttimestamp\x18\x03 \x01(\tR\ttimestamp\x12\x15\n" +
+	"\x06net_in\x18\x04 \x01(\x04R\x05netIn\x12\x17\n" +
+	"\anet_out\x18\x05 \x01(\x04R\x06netOut\x12\x1b\n" +
+	"\tdisk_read\x18\x06 \x01(\x04R\bdiskRead\x12\x1d\n" +
+	"\n" +
+	"disk_write\x18\a \x01(\x04R\tdiskWrite2N\n" +
+	"\rSystemMonitor\x12=\n" +
+	"\n" +
+	"GetMetrics\x12\x16.system.MetricsRequest\x1a\x17.system.MetricsResponseB Z\x1eexample.com/system/proto;protob\x06proto3"
 
 var (
 	file_proto_system_proto_rawDescOnce sync.Once
@@ -135,12 +182,12 @@ func file_proto_system_proto_rawDescGZIP() []byte {
 
 var file_proto_system_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_proto_system_proto_goTypes = []any{
-	(*Empty)(nil),          // 0: performance.Empty
-	(*VitalsResponse)(nil), // 1: performance.VitalsResponse
+	(*MetricsRequest)(nil),  // 0: system.MetricsRequest
+	(*MetricsResponse)(nil), // 1: system.MetricsResponse
 }
 var file_proto_system_proto_depIdxs = []int32{
-	0, // 0: performance.PerformanceService.GetVitals:input_type -> performance.Empty
-	1, // 1: performance.PerformanceService.GetVitals:output_type -> performance.VitalsResponse
+	0, // 0: system.SystemMonitor.GetMetrics:input_type -> system.MetricsRequest
+	1, // 1: system.SystemMonitor.GetMetrics:output_type -> system.MetricsResponse
 	1, // [1:2] is the sub-list for method output_type
 	0, // [0:1] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
