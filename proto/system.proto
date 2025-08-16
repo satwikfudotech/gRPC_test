@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package performance;
+option go_package = "grpc-performance-test/proto;proto";
+
+// Service to get system performance data
+service PerformanceService {
+  rpc GetVitals (Empty) returns (VitalsResponse);
+}
+
+message Empty {}
+
+message VitalsResponse {
+  float cpu_usage = 1;
+  float ram_usage = 2;
+}
