@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"math/rand"
 	"time"
 
 	pb "grpc-system-monitor/proto"
@@ -11,25 +12,23 @@ import (
 )
 
 func main() {
-	// Connect to server
 	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 	if err != nil {
-		log.Fatalf("Could not connect: %v", err)
+		log.Fatalf("Did not connect: %v", err)
 	}
 	defer conn.Close()
 
-	client := pb.NewSystemMonitorClient(conn)
+	c := pb.NewSystemMonitorClient(conn)
 
 	for {
-		resp, err := client.GetMetrics(context.Background(), &pb.MetricsRequest{})
+		resp, err := c.GetMetrics(context.Background(), &pb.MetricsRequest{})
 		if err != nil {
-			log.Fatalf("Error fetching metrics: %v", err)
+			log.Fatalf("Error calling GetMetrics: %v", err)
 		}
 
-		log.Printf("📊 Metrics -> CPU: %.2f%% | RAM: %.2f%% | Time: %s | NetIn: %dB | NetOut: %dB | DiskRead: %dB | DiskWrite: %dB",
-			resp.CpuUsage, resp.RamUsage, resp.Timestamp, resp.NetIn, resp.NetOut, resp.DiskRead, resp.DiskWrite)
-		log.SetFlags(0) // removes default date/time prefix
+		log.Printf("📊 CPU: %.2f%% | RAM: %.2f%% | Time: %s | NetIn: %.2f KB | NetOut: %.2f KB | DiskRead: %.2f KB | DiskWrite: %.2f KB",
+			resp.CpuUsage, resp.RamUsage, resp.Timestamp, resp.NetInKb, resp.NetOutKb, resp.DiskReadKb, resp.DiskWriteKb)
 
-		time.Sleep(5 * time.Second)
+		time.Sleep(time.Duration(1000+rand.Intn(2000)) * time.Millisecond)
 	}
 }

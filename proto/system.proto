@@ -11,11 +11,11 @@ service SystemMonitor {
 message MetricsRequest {}
 
 message MetricsResponse {
-  double cpu_usage = 1;         // CPU usage %
-  double ram_usage = 2;         // RAM usage %
-  string timestamp = 3;         // Capture time
-  uint64 net_in = 4;            // Bytes received
-  uint64 net_out = 5;           // Bytes sent
-  uint64 disk_read = 6;         // Disk read bytes
-  uint64 disk_write = 7;        // Disk write bytes
+  double cpu_usage = 1;
+  double ram_usage = 2;
+  string timestamp = 3;
+  double net_in_kb = 4;
+  double net_out_kb = 5;
+  double disk_read_kb = 6;
+  double disk_write_kb = 7;
 }

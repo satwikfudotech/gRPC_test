@@ -59,13 +59,13 @@ func (*MetricsRequest) Descriptor() ([]byte, []int) {
 
 type MetricsResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	CpuUsage      float64                `protobuf:"fixed64,1,opt,name=cpu_usage,json=cpuUsage,proto3" json:"cpu_usage,omitempty"`   // CPU usage %
-	RamUsage      float64                `protobuf:"fixed64,2,opt,name=ram_usage,json=ramUsage,proto3" json:"ram_usage,omitempty"`   // RAM usage %
-	Timestamp     string                 `protobuf:"bytes,3,opt,name=timestamp,proto3" json:"timestamp,omitempty"`                   // Capture time
-	NetIn         uint64                 `protobuf:"varint,4,opt,name=net_in,json=netIn,proto3" json:"net_in,omitempty"`             // Bytes received
-	NetOut        uint64                 `protobuf:"varint,5,opt,name=net_out,json=netOut,proto3" json:"net_out,omitempty"`          // Bytes sent
-	DiskRead      uint64                 `protobuf:"varint,6,opt,name=disk_read,json=diskRead,proto3" json:"disk_read,omitempty"`    // Disk read bytes
-	DiskWrite     uint64                 `protobuf:"varint,7,opt,name=disk_write,json=diskWrite,proto3" json:"disk_write,omitempty"` // Disk write bytes
+	CpuUsage      float64                `protobuf:"fixed64,1,opt,name=cpu_usage,json=cpuUsage,proto3" json:"cpu_usage,omitempty"`
+	RamUsage      float64                `protobuf:"fixed64,2,opt,name=ram_usage,json=ramUsage,proto3" json:"ram_usage,omitempty"`
+	Timestamp     string                 `protobuf:"bytes,3,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
+	NetInKb       float64                `protobuf:"fixed64,4,opt,name=net_in_kb,json=netInKb,proto3" json:"net_in_kb,omitempty"`
+	NetOutKb      float64                `protobuf:"fixed64,5,opt,name=net_out_kb,json=netOutKb,proto3" json:"net_out_kb,omitempty"`
+	DiskReadKb    float64                `protobuf:"fixed64,6,opt,name=disk_read_kb,json=diskReadKb,proto3" json:"disk_read_kb,omitempty"`
+	DiskWriteKb   float64                `protobuf:"fixed64,7,opt,name=disk_write_kb,json=diskWriteKb,proto3" json:"disk_write_kb,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -121,30 +121,30 @@ func (x *MetricsResponse) GetTimestamp() string {
 	return ""
 }
 
-func (x *MetricsResponse) GetNetIn() uint64 {
+func (x *MetricsResponse) GetNetInKb() float64 {
 	if x != nil {
-		return x.NetIn
+		return x.NetInKb
 	}
 	return 0
 }
 
-func (x *MetricsResponse) GetNetOut() uint64 {
+func (x *MetricsResponse) GetNetOutKb() float64 {
 	if x != nil {
-		return x.NetOut
+		return x.NetOutKb
 	}
 	return 0
 }
 
-func (x *MetricsResponse) GetDiskRead() uint64 {
+func (x *MetricsResponse) GetDiskReadKb() float64 {
 	if x != nil {
-		return x.DiskRead
+		return x.DiskReadKb
 	}
 	return 0
 }
 
-func (x *MetricsResponse) GetDiskWrite() uint64 {
+func (x *MetricsResponse) GetDiskWriteKb() float64 {
 	if x != nil {
-		return x.DiskWrite
+		return x.DiskWriteKb
 	}
 	return 0
 }
@@ -154,16 +154,17 @@ var File_proto_system_proto protoreflect.FileDescriptor
 const file_proto_system_proto_rawDesc = "" +
 	"\n" +
 	"\x12proto/system.proto\x12\x06system\"\x10\n" +
-	"\x0eMetricsRequest\"\xd5\x01\n" +
+	"\x0eMetricsRequest\"\xe9\x01\n" +
 	"\x0fMetricsResponse\x12\x1b\n" +
 	"\tcpu_usage\x18\x01 \x01(\x01R\bcpuUsage\x12\x1b\n" +
 	"\tram_usage\x18\x02 \x01(\x01R\bramUsage\x12\x1c\n" +
-	"\ttimestamp\x18\x03 \x01(\tR\ttimestamp\x12\x15\n" +
-	"\x06net_in\x18\x04 \x01(\x04R\x05netIn\x12\x17\n" +
-	"\anet_out\x18\x05 \x01(\x04R\x06netOut\x12\x1b\n" +
-	"\tdisk_read\x18\x06 \x01(\x04R\bdiskRead\x12\x1d\n" +
+	"\ttimestamp\x18\x03 \x01(\tR\ttimestamp\x12\x1a\n" +
+	"\tnet_in_kb\x18\x04 \x01(\x01R\anetInKb\x12\x1c\n" +
 	"\n" +
-	"disk_write\x18\a \x01(\x04R\tdiskWrite2N\n" +
+	"net_out_kb\x18\x05 \x01(\x01R\bnetOutKb\x12 \n" +
+	"\fdisk_read_kb\x18\x06 \x01(\x01R\n" +
+	"diskReadKb\x12\"\n" +
+	"\rdisk_write_kb\x18\a \x01(\x01R\vdiskWriteKb2N\n" +
 	"\rSystemMonitor\x12=\n" +
 	"\n" +
 	"GetMetrics\x12\x16.system.MetricsRequest\x1a\x17.system.MetricsResponseB Z\x1eexample.com/system/proto;protob\x06proto3"
