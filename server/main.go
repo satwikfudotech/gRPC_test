@@ -2,11 +2,8 @@ package main
 
 import (
 	"context"
-	"encoding/csv"
-	"fmt"
 	"log"
 	"net"
-	"os"
 	"sort"
 	"time"
 
@@ -34,33 +31,6 @@ func median(values []float64) float64 {
 		return values[n/2]
 	}
 	return (values[n/2-1] + values[n/2]) / 2
-}
-
-// --- Save metrics to CSV ---
-func saveToCSV(record []string) {
-	fileExists := true
-	if _, err := os.Stat("metrics_log.csv"); os.IsNotExist(err) {
-		fileExists = false
-	}
-
-	file, err := os.OpenFile("metrics_log.csv", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-	if err != nil {
-		log.Println("❌ Error opening CSV:", err)
-		return
-	}
-	defer file.Close()
-
-	writer := csv.NewWriter(file)
-	defer writer.Flush()
-
-	// Write header only once (first time file is created)
-	if !fileExists {
-		writer.Write([]string{"Timestamp", "CPU", "RAM", "NET IN", "NET OUT", "DISK READ", "DISK WRITE"})
-	}
-
-	if err := writer.Write(record); err != nil {
-		log.Println("❌ Error writing to CSV:", err)
-	}
 }
 
 // --- gRPC Implementation ---
@@ -92,17 +62,6 @@ func (s *server) GetMetrics(ctx context.Context, req *pb.MetricsRequest) (*pb.Me
 		writeKB = float64(io.WriteBytes) / 1024
 		break // take first disk only
 	}
-
-	// Save record to CSV
-	saveToCSV([]string{
-		timestamp,
-		fmt.Sprintf("%.2f", cpuMedian),
-		fmt.Sprintf("%.2f", ramUsage),
-		fmt.Sprintf("%.2f", netIn),
-		fmt.Sprintf("%.2f", netOut),
-		fmt.Sprintf("%.2f", readKB),
-		fmt.Sprintf("%.2f", writeKB),
-	})
 
 	return &pb.MetricsResponse{
 		CpuUsage:    cpuMedian,
